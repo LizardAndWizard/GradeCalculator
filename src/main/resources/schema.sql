@@ -10,6 +10,29 @@ create table Korisnik (
                           LozinkaHash nvarchar(256) not null,
                           LozinkaSalt nvarchar(256) not null,
                           UkupnaOcjena float default 0 not null,
-                          UlogaID int,
+                          UlogaID int not null,
                           foreign key (UlogaID) references Uloga(IDUloga)
+);
+
+create table Godina (
+                        IDGodina int primary key identity (1, 1),
+                        Naziv nvarchar(50) unique not null,
+                        Prosjek float,
+                        KorisnikID int,
+                        foreign key (KorisnikID) references Korisnik(IDKorisnik)
+);
+
+create table Predmet (
+                         IDPredmet int primary key identity (1, 1),
+                         Naziv nvarchar(50) unique not null,
+                         Prosjek float,
+                         GodinaID int,
+                         foreign key (GodinaID) references Godina(IDGodina)
+);
+
+create table Ocjena (
+                        IDOcjena int primary key identity (1, 1),
+                        Vrijednost int not null,
+                        PredmetID int,
+                        foreign key (PredmetID) references Predmet(IDPredmet)
 );
