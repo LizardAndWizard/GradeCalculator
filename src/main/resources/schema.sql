@@ -36,3 +36,9 @@ create table Ocjena (
                         PredmetID int,
                         foreign key (PredmetID) references Predmet(IDPredmet)
 );
+
+create table Log(
+                        IDLog int primary key identity (1, 1),
+                        Opis nvarchar(100) not null,
+                        Vrijeme datetime not null
+)
