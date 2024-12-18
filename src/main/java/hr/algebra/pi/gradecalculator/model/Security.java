@@ -20,20 +20,22 @@ public class Security {
         return salt;
     }
 
+    private static String getHash(SecretKeyFactory factory, KeySpec spec) throws InvalidKeySpecException {
+        byte[] hash = factory.generateSecret(spec).getEncoded();
+        return Base64.getEncoder().encodeToString(hash);
+    }
+
     public static String generatePasswordHash(String plaintext, byte[] salt) throws NoSuchAlgorithmException, InvalidKeySpecException {
         KeySpec spec = new PBEKeySpec(plaintext.toCharArray(), salt, ITERATION_COUNT, KEY_LENGTH);
         SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256");
 
-        byte[] hash = factory.generateSecret(spec).getEncoded();
-        return Base64.getEncoder().encodeToString(hash);
+        return getHash(factory, spec);
     }
 
     public static boolean verifyPassword(String plaintext, String storedHash, byte[] salt, int iterationCount, int keyLength) throws NoSuchAlgorithmException, InvalidKeySpecException {
         KeySpec spec = new PBEKeySpec(plaintext.toCharArray(), salt, iterationCount, keyLength);
         SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256");
-
-        byte[] hash = factory.generateSecret(spec).getEncoded();
-        String newHash = Base64.getEncoder().encodeToString(hash);
+        String newHash = getHash(factory, spec);
 
         return newHash.equals(storedHash);
     }
